@@ -1,0 +1,45 @@
+﻿@page "/"
+@using VSIX.University.Directory.Shared
+@inject HttpClient Http
+
+<PageTitle>VSIX Repositories</PageTitle>
+
+<h1>VSIX Repositories</h1>
+
+@if (_repositories == null)
+{
+    <p><em>Gathering Repositories...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Url</th>
+            <th>Tags</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var repository in _repositories)
+        {
+            <tr>
+                <td>@repository.Name</td>
+                <td>@repository.Description</td>
+                <td>@repository.Url</td>
+                <td>@string.Join(", ", repository.Tags)</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Repository[]? _repositories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _repositories = await Http.GetFromJsonAsync<Repository[]>("Home");
+    }
+}
